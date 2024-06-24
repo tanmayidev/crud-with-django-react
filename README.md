@@ -34,11 +34,22 @@ Create backend project
 django-admin startproject backend
 ```
 
+## Run Backend
+
+Run the backend app
+
+- manage.py is the cli tool for python project
+
+```
+python manage.py runserver
+```
+
 ## Commands run for Django
 
 ```
 django-admin startproject backend
-
+cd backend
+python manage.py startapp api
 
 
 ```
