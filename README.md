@@ -46,12 +46,24 @@ python manage.py runserver
 
 ## Commands run for Django
 
-```
+```python
 django-admin startproject backend
+
 cd backend
+
 python manage.py startapp api
 
 
+# migrate model after registering in admin
+python manage.py makemigrations
+
+python manage.py migrate
+
+# create super user
+python manage.py createsuperuser
+userame: admin
+email: admin@admin.com
+password: admin
 ```
 
 ## Handling venv
