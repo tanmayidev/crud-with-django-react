@@ -64,6 +64,10 @@ python manage.py createsuperuser
 userame: admin
 email: admin@admin.com
 password: admin
+
+# fixing cors headers issue
+python -m pip install django-cors-headers
+
 ```
 
 ## Handling venv
