@@ -1,5 +1,27 @@
 # crud-with-django-react
 
+# Running the App
+
+## Frontend
+
+```
+cd frontend
+
+npm run start
+```
+
+## Backend
+
+```
+cd backend
+
+python manage.py runserver
+```
+
+---
+
+# Creating App Setup
+
 ## Frontend Setup
 
 Create react app
