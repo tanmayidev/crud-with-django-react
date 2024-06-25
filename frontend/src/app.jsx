@@ -3,26 +3,19 @@ import axios from "axios";
 import "./main.css";
 
 const App = () => {
+  const defaultStudentValue = {
+    first_name: "",
+    last_name: "",
+    age: "",
+    gender: "",
+    grade: "",
+    address: "",
+    contact_number: "",
+  };
   const [students, setStudents] = useState([]);
-  const [newStudent, setNewStudent] = useState({
-    first_name: "",
-    last_name: "",
-    age: "",
-    gender: "",
-    grade: "",
-    address: "",
-    contact_number: "",
-  });
+  const [newStudent, setNewStudent] = useState(defaultStudentValue);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [toView, setToView] = useState({
-    first_name: "",
-    last_name: "",
-    age: "",
-    gender: "",
-    grade: "",
-    address: "",
-    contact_number: "",
-  });
+  const [toView, setToView] = useState(defaultStudentValue);
   const [openView, setOpenView] = useState(false);
 
   useEffect(() => {
@@ -53,15 +46,51 @@ const App = () => {
 
       setStudents([...students, response.data]);
       // reset new student
-      setNewStudent({
-        first_name: "",
-        last_name: "",
-        age: "",
-        gender: "",
-        grade: "",
-        address: "",
-        contact_number: "",
-      });
+      setNewStudent(defaultStudentValue);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleViewClick = async (id) => {
+    const response = await axios.get(
+      `http://127.0.0.1:8000/api/students/${id}`
+    );
+
+    setToView(response.data);
+    setOpenView(true);
+  };
+
+  const handleEditClick = (student) => {
+    setSelectedStudent(student);
+    setNewStudent(student);
+  };
+
+  const handleUpdateStudent = async () => {
+    try {
+      const response = await axios.put(
+        `http://127.0.0.1:8000/api/students/${selectedStudent.id}/`,
+        newStudent
+      );
+      fetchStudents();
+      setOpenView(false);
+      setNewStudent(defaultStudentValue);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleCancelUpdateStudent = () => {
+    setSelectedStudent(null);
+    setNewStudent(defaultStudentValue);
+  };
+
+  const handleDeleteClick = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://127.0.0.1:8000/api/students/${id}/`
+      );
+      fetchStudents();
     } catch (error) {
       console.error(error);
     }
@@ -70,6 +99,7 @@ const App = () => {
   return (
     <div className="app-container">
       <h1>Student Management System</h1>
+      {/* Form Container */}
       <div className="form-container">
         <div className="form-inputs">
           <input
@@ -124,15 +154,73 @@ const App = () => {
           <div className="form-buttons">
             {selectedStudent ? (
               <>
-                <button>Update</button>
-                <button>Cancel</button>
+                <button onClick={handleUpdateStudent}>Update</button>
+                <button onClick={handleCancelUpdateStudent}>Cancel</button>
               </>
             ) : (
-              <button>Add New Student</button>
+              <button onClick={handleAddStudent}>Add New Student</button>
             )}
           </div>
         </div>
       </div>
+
+      {/* Student List */}
+      <ul className="student-list">
+        {students.map((student) => {
+          return (
+            <li key={student.id}>
+              <div>
+                <strong>
+                  {student.first_name} {student.last_name}
+                </strong>
+              </div>
+              <div className="actions">
+                <button
+                  className="view"
+                  onClick={() => handleViewClick(student.id)}
+                >
+                  View
+                </button>
+                <button
+                  className="edit"
+                  onClick={() => handleEditClick(student)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="delete"
+                  onClick={() => handleDeleteClick(student.id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+
+      {/* Single View */}
+      {openView && (
+        <>
+          <div className="outer-box">
+            <strong>
+              {toView.first_name} {toView.last_name}
+            </strong>
+            <br />
+            <span>Age : {toView.age}</span>
+            <br />
+            <span>Gender: {toView.gender}</span>
+            <br />
+            <span>Grade: {toView.grade}</span>
+            <br />
+            <span>Address: {toView.address}</span>
+            <br />
+            <span>Contact Number: {toView.contact_number}</span>
+            <br />
+          </div>
+          <button onClick={() => setOpenView(false)}>Close</button>
+        </>
+      )}
     </div>
   );
 };
