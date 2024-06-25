@@ -9,3 +9,6 @@ class Student(models.Model):
   grade = models.CharField(max_length=2)
   address = models.TextField()
   contact_number = models.CharField(max_length=15)
+
+  def __str__(self):
+    return self.first_name
